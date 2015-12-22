@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
 <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
-<script src="./jquery-2.1.4.min.js"></script>
-<link rel="stylesheet" type="text/css" href="./main.css">
+<script src="js/lib/jquery-2.1.4.min.js"></script>
+<script src="js/twitterAPIKey.js"></script>
+<link rel="stylesheet" type="text/css" href="css/main.css">
 <title>TwitterClient</title>
 </head>
 <body>
@@ -14,14 +15,15 @@
 <input type="submit" value="検索" onclick="getTwitter();">
 <div id="tweetList" ></div>
 <script type="text/javascript">
+var twitterAPIKey = new TwitterAPIKey();
 var options = {
   method: "GET",
   apiURL: "https://api.twitter.com/1.1/search/tweets.json?q=",
   count:10,
-  consumerKey:"",
-  consumerSecret:"",
-  accessToken:"",
-  tokenSecret:""
+  consumerKey:twitterAPIKey.consumerKey,
+  consumerSecret:twitterAPIKey.consumerSecret,
+  accessToken:twitterAPIKey.accessToken,
+  tokenSecret:twitterAPIKey.tokenSecret
 };
 function getTwitter() {
   var searchWord = document.getElementById('searchWord');
@@ -55,6 +57,8 @@ function getTwitter() {
 }
 
 function resultsOutput(data) {
+  alert("resultsOutput");
+  alert(data);
   var statuses = data.statuses;
   var ul = document.createElement("ul");
   ul.setAttribute("class","list");

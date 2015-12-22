@@ -1,0 +1,20 @@
+ul.list {
+  display: table;
+  border-collapse: collapse;
+}
+
+ul.list li {
+  display: table-row;
+}
+
+span.cell {
+  display: table-cell;
+  padding: 10px;
+  border: 1px solid #000;
+}
+
+div#dragOver {
+	border : solid 1px black;
+  padding : 10px;
+	background-color: yellow; 
+}
