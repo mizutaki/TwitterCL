@@ -5,7 +5,8 @@
 <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
 <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
 <script src="js/lib/jquery-2.1.4.min.js"></script>
-<script src="js/twitterAPIKey.js"></script>
+<script src="js/TwitterAPIKey.js"></script>
+<script src="js/Table.js"></script>
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <title>TwitterClient</title>
 </head>
@@ -61,42 +62,15 @@ function getTwitter() {
 
 function resultsOutput(data) {
   var statuses = data.statuses;
-  var ul = document.createElement("ul");
-  ul.setAttribute("class","list");
   console.log(statuses.length + "件");
+  createTableHeader();
+  var ul = document.getElementById("list");
   for (var i = 0; i < statuses.length; i++) {
     console.log(statuses[i].user.name);
     console.log(statuses[i].user.screen_name);
     console.log(statuses[i].text);
     createTable(ul,statuses[i]);
   }
-}
-
-/**
- * spanタグを作成します
- * @param {string} name spanタグに設定するname属性の値
- * @param {string} data spanタグに設定するinnerHTMLの値
- */
-function createSpan(name,data) {
-  var span = document.createElement("span");
-  span.setAttribute("data-name",name);
-  span.setAttribute("class","cell");
-  span.innerHTML = data;
-  return span;
-}
-
-function createTable(element,data) {
-  var li = document.createElement("li");
-  li.setAttribute("id", "tweet");
-  var span1 = createSpan("name",data.user.name);
-  var span2 = createSpan("screen_name",data.user.screen_name);
-  var span3 = createSpan("text",data.text);
-  li.appendChild(span1);
-  li.appendChild(span2);
-  li.appendChild(span3);
-  element.appendChild(li);
-  var div = document.getElementById("tweetList");
-  div.appendChild(element);
 }
 </script>
 </body>
