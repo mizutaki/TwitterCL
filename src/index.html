@@ -13,6 +13,7 @@
 <h1>Twitter, Client!</h1>
 <input id="searchWord" type="search" placeholder="search account">
 <input type="submit" value="検索" onclick="getTwitter();">
+<input type="number" style="width:30px;" id="count" min="10" max="100" step="10" required>件
 <div id="tweetList" ></div>
 <script type="text/javascript">
 var twitterAPIKey = new TwitterAPIKey();
@@ -27,7 +28,9 @@ var options = {
 };
 function getTwitter() {
   var searchWord = document.getElementById('searchWord');
-  options.apiURL = options.apiURL + searchWord.value;
+  var count = document.getElementById('count');
+  options.apiURL = options.apiURL + searchWord.value + '&count=' + count.value;
+  console.log(options.apiURL);
   var accessor = {
     consumerSecret: options.consumerSecret,
     tokenSecret: options.tokenSecret
@@ -57,11 +60,10 @@ function getTwitter() {
 }
 
 function resultsOutput(data) {
-  alert("resultsOutput");
-  alert(data);
   var statuses = data.statuses;
   var ul = document.createElement("ul");
   ul.setAttribute("class","list");
+  console.log(statuses.length + "件");
   for (var i = 0; i < statuses.length; i++) {
     console.log(statuses[i].user.name);
     console.log(statuses[i].user.screen_name);
