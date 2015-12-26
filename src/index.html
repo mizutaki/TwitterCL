@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
 <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
-<script src="js/lib/jquery-2.1.4.min.js"></script>
 <script src="js/TwitterAPIKey.js"></script>
 <script src="js/Table.js"></script>
+<script src="js/lib/jquery-2.1.4.min.js"></script>
+<script src="js/lib/jquery.datetimepicker.full.js"></script>
 <link rel="stylesheet" type="text/css" href="css/main.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css">
 <title>TwitterClient</title>
 </head>
 <body>
@@ -15,8 +17,15 @@
 <input id="searchWord" type="search" placeholder="search account">
 <input type="submit" value="検索" onclick="getTwitter();">
 <input type="number" style="width:30px;" id="count" min="10" max="100" step="10" required>件
-<div id="tweetList" ></div>
+<input id="datetimepickerUntil" type="text">まで
+<div id="tweetList" style="width:900px;align:center;"></div>
 <script type="text/javascript">
+$(function(){
+$('#datetimepickerUntil').datetimepicker({
+    timepicker: false,//時間非表示
+    format: 'Y-m-d'//フォーマット指定
+  });
+});
 var twitterAPIKey = new TwitterAPIKey();
 var options = {
   method: "GET",
@@ -30,15 +39,17 @@ var options = {
 function getTwitter() {
   var searchWord = document.getElementById('searchWord');
   var count = document.getElementById('count');
-  options.apiURL = options.apiURL + searchWord.value + '&count=' + count.value;
-  console.log(options.apiURL);
+  var until = document.getElementById('datetimepickerUntil');
+  var requestURL = options.apiURL + searchWord.value + '&count=' + count.value + '&until=' + until.value;
+
+  console.log(requestURL);
   var accessor = {
     consumerSecret: options.consumerSecret,
     tokenSecret: options.tokenSecret
   };
   var message = {
     method: options.method,
-    action:options.apiURL,
+    action:requestURL,
     parameters: {
       count:options.count,
       oauth_version: "1.0",

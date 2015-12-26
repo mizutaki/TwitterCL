@@ -16,8 +16,8 @@ span.cell {
   border: 1px solid #000;
 }
 
-div#dragOver {
-	border : solid 1px black;
-  padding : 10px;
-	background-color: yellow; 
+div#tweetList {
+	width : 900px;
+  margin: 0 auto 0 auto;
+  padding-top:10px;
 }
