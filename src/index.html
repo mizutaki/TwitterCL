@@ -5,6 +5,7 @@
 <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
 <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
 <script src="js/TwitterAPIKey.js"></script>
+<script src="js/TwitterAPI.js"></script>
 <script src="js/Table.js"></script>
 <script src="js/lib/jquery-2.1.4.min.js"></script>
 <script src="js/lib/jquery.datetimepicker.full.js"></script>
@@ -26,62 +27,23 @@ $('#datetimepickerUntil').datetimepicker({
     format: 'Y-m-d'//フォーマット指定
   });
 });
-var twitterAPIKey = new TwitterAPIKey();
-var options = {
-  method: "GET",
-  apiURL: "https://api.twitter.com/1.1/search/tweets.json?q=",
-  count:10,
-  consumerKey:twitterAPIKey.consumerKey,
-  consumerSecret:twitterAPIKey.consumerSecret,
-  accessToken:twitterAPIKey.accessToken,
-  tokenSecret:twitterAPIKey.tokenSecret
-};
 function getTwitter() {
   var searchWord = document.getElementById('searchWord');
   var count = document.getElementById('count');
   var until = document.getElementById('datetimepickerUntil');
-  var requestURL = options.apiURL + searchWord.value + '&count=' + count.value + '&until=' + until.value;
-
-  console.log(requestURL);
-  var accessor = {
-    consumerSecret: options.consumerSecret,
-    tokenSecret: options.tokenSecret
-  };
-  var message = {
-    method: options.method,
-    action:requestURL,
-    parameters: {
-      count:options.count,
-      oauth_version: "1.0",
-      oauth_signature_method: "HMAC-SHA1",
-      oauth_consumer_key: options.consumerKey,
-      oauth_token: options.accessToken,
-      callback: "resultsOutput"
-    }
-  };
-  OAuth.setTimestampAndNonce(message);
-  OAuth.SignatureMethod.sign(message,accessor);
-  var url = OAuth.addToURL(message.action, message.parameters);
+  var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + count.value + '&until=' + until.value;
+  var tw = new TwitterAPI(requestURL, 'resultsOutput');
+  console.log(tw);
+  OAuth.setTimestampAndNonce(tw.message);
+  OAuth.SignatureMethod.sign(tw.message,tw.accessor);
+  var url = OAuth.addToURL(tw.message.action, tw.message.parameters);
   $.ajax({
-    type: message.method,
+    type: tw.method,
     url: url,
     dataType: "jsonp",
     jsonp:false,
     cache: true
   });
-}
-
-function resultsOutput(data) {
-  var statuses = data.statuses;
-  console.log(statuses.length + "件");
-  createTableHeader();
-  var ul = document.getElementById("list");
-  for (var i = 0; i < statuses.length; i++) {
-    console.log(statuses[i].user.name);
-    console.log(statuses[i].user.screen_name);
-    console.log(statuses[i].text);
-    createTable(ul,statuses[i]);
-  }
 }
 </script>
 </body>
