@@ -37,3 +37,16 @@ function resultsOutput(data) {
     createTable(ul,statuses[i]);
   }
 }
+
+function resultsOutputAccount(data) {
+  var statuses = data;
+  console.log(statuses.length + "件");
+  createTableHeader();
+  var ul = document.getElementById("list");
+  for (var i = 0; i < statuses.length; i++) {
+    console.log(statuses[i].user.name);
+    console.log(statuses[i].user.screen_name);
+    console.log(statuses[i].text);
+    createTable(ul,statuses[i]);
+  }
+}

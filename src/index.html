@@ -15,6 +15,12 @@
 </head>
 <body>
 <h1>Twitter, Client!</h1>
+<div>
+<input id="searchAccount" type="radio" name="searchMode" value="account">
+<label for="searchAccount">account</label>
+<input id="searchTweet" type="radio" name="searchMode" value="tweet">
+<label for="searchTweet">tweets</label>
+</div>
 <input id="searchWord" type="search" placeholder="search account">
 <input type="submit" value="検索" onclick="getTwitter();">
 <input type="number" style="width:30px;" id="count" min="10" max="100" step="10" required>件
@@ -31,8 +37,20 @@ function getTwitter() {
   var searchWord = document.getElementById('searchWord');
   var count = document.getElementById('count');
   var until = document.getElementById('datetimepickerUntil');
-  var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + count.value + '&until=' + until.value;
+  var searchMode = document.getElementsByName('searchMode');
   var tw = new TwitterAPI(requestURL, 'resultsOutput');
+  for (var i = 0; i < searchMode.length; i++) {
+    if (searchMode[i].checked) {
+      var mode = searchMode[i].value;
+      if (mode == 'account') {
+        var requestURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + searchWord.value + '&count=' + count.value;
+        tw = new TwitterAPI(requestURL, 'resultsOutputAccount');
+      } else if (mode == 'tweet') {
+        var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + count.value + '&until=' + until.value;
+        tw = new TwitterAPI(requestURL, 'resultsOutput');
+      }
+    }
+  }  
   console.log(tw);
   OAuth.setTimestampAndNonce(tw.message);
   OAuth.SignatureMethod.sign(tw.message,tw.accessor);
