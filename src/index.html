@@ -16,15 +16,20 @@
 <body>
 <h1>Twitter, Client!</h1>
 <div>
-<input id="searchAccount" type="radio" name="searchMode" value="account">
+<label>search mode：</label>
+<input id="searchAccount" type="radio" name="searchMode" value="account" checked="checked" onchange="changeRadio();">
 <label for="searchAccount">account</label>
-<input id="searchTweet" type="radio" name="searchMode" value="tweet">
-<label for="searchTweet">tweets</label>
+<input id="searchTweet" type="radio" name="searchMode" value="tweet" onchange="changeRadio();">
+<label for="searchTweet">tweet</label>
 </div>
+<div>
+<label>serach option：</label>
+<input id="datetimepickerUntil" type="text" style="display:none">
+<input type="number" style="width:30px;" id="count" min="10" max="100" step="10" required>件
+</div>
+<label>serach word：</label>
 <input id="searchWord" type="search" placeholder="search account">
 <input type="submit" value="検索" onclick="getTwitter();">
-<input type="number" style="width:30px;" id="count" min="10" max="100" step="10" required>件
-<input id="datetimepickerUntil" type="text">まで
 <div id="tweetList" style="width:900px;align:center;"></div>
 <script type="text/javascript">
 $(function(){
@@ -37,20 +42,15 @@ function getTwitter() {
   var searchWord = document.getElementById('searchWord');
   var count = document.getElementById('count');
   var until = document.getElementById('datetimepickerUntil');
-  var searchMode = document.getElementsByName('searchMode');
   var tw = new TwitterAPI(requestURL, 'resultsOutput');
-  for (var i = 0; i < searchMode.length; i++) {
-    if (searchMode[i].checked) {
-      var mode = searchMode[i].value;
-      if (mode == 'account') {
-        var requestURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + searchWord.value + '&count=' + count.value;
-        tw = new TwitterAPI(requestURL, 'resultsOutputAccount');
-      } else if (mode == 'tweet') {
-        var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + count.value + '&until=' + until.value;
-        tw = new TwitterAPI(requestURL, 'resultsOutput');
-      }
-    }
-  }  
+  var radioValue = $("[name=searchMode]:checked").val();
+  if (radioValue == 'account') {
+    var requestURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + searchWord.value + '&count=' + count.value;
+    tw = new TwitterAPI(requestURL, 'resultsOutputAccount');
+  } else if (radioValue == 'tweet') {
+    var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + count.value + '&until=' + until.value;
+    tw = new TwitterAPI(requestURL, 'resultsOutput');
+  }
   console.log(tw);
   OAuth.setTimestampAndNonce(tw.message);
   OAuth.SignatureMethod.sign(tw.message,tw.accessor);
@@ -62,6 +62,17 @@ function getTwitter() {
     jsonp:false,
     cache: true
   });
+}
+
+function changeRadio() {
+  var radioValue = $("[name=searchMode]:checked").val();
+  if (radioValue == 'tweet') {
+    var datetimepicker = document.getElementById('datetimepickerUntil');
+    datetimepicker.style.display = "";
+  } else if (radioValue == "account") {
+    var datetimepicker = document.getElementById('datetimepickerUntil');
+    datetimepicker.style.display = "none";
+  }
 }
 </script>
 </body>
