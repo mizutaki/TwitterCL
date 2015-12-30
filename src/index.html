@@ -39,6 +39,14 @@ $('#datetimepickerUntil').datetimepicker({
   });
 });
 function getTwitter() {
+  var tweetList =document.getElementById('tweetList');
+  var childs = tweetList.childNodes;
+  if (typeof childs !== "undefined" && childs.length !== 0) {
+    var child = childs[0];
+    for (var i = 0; i < childs.length; i++) {
+      tweetList.removeChild(childs[i]);  
+    }
+  }
   var searchWord = document.getElementById('searchWord');
   var count = document.getElementById('count');
   var until = document.getElementById('datetimepickerUntil');
