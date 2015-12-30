@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/mizutaki/TwitterCL/issues"
   },
-  "homepage": "https://github.com/mizutaki/TwitterCL#readme"
+  "homepage": "https://github.com/mizutaki/TwitterCL#readme",
+  "dependencies": {
+    "jquery": "^2.1.4"
+  }
 }
