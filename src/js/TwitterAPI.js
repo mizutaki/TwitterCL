@@ -25,10 +25,17 @@ var TwitterAPI = function(requestURL, callBack) {
   }
 };
 
+function createUl() {
+  var ul = document.createElement("ul");
+  ul.setAttribute("id","list");
+  var div = document.getElementById("tweetList");
+  div.appendChild(ul);
+}
+
 function resultsOutput(data) {
   var statuses = data.statuses;
   console.log(statuses.length + "件");
-  createTableHeader();
+  createUl();
   var ul = document.getElementById("list");
   for (var i = 0; i < statuses.length; i++) {
     console.log(statuses[i].user.name);
@@ -41,7 +48,20 @@ function resultsOutput(data) {
 function resultsOutputAccount(data) {
   var statuses = data;
   console.log(statuses.length + "件");
-  createTableHeader();
+  createUl();
+  var ul = document.getElementById("list");
+  for (var i = 0; i < statuses.length; i++) {
+    console.log(statuses[i].user.name);
+    console.log(statuses[i].user.screen_name);
+    console.log(statuses[i].text);
+    createTable(ul,statuses[i]);
+  }
+}
+
+function resultsOutputMonitorin(data) {
+  var statuses = data;
+  console.log(statuses.length + "件");
+  createUl();
   var ul = document.getElementById("list");
   for (var i = 0; i < statuses.length; i++) {
     console.log(statuses[i].user.name);

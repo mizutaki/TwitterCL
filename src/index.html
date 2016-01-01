@@ -4,33 +4,58 @@
 <meta charset="UTF-8">
 <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
 <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+<script src="js/lib/jquery-2.1.4.min.js"></script>
+<script src="js/lib/jquery.datetimepicker.full.js"></script>
 <script src="js/TwitterAPIKey.js"></script>
 <script src="js/TwitterAPI.js"></script>
 <script src="js/Table.js"></script>
-<script src="js/lib/jquery-2.1.4.min.js"></script>
-<script src="js/lib/jquery.datetimepicker.full.js"></script>
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css">
 <title>TwitterClient</title>
 </head>
 <body>
 <h1>Twitter, Client!</h1>
-<div>
-<label>search mode：</label>
-<input id="searchAccount" type="radio" name="searchMode" value="account" checked="checked" onchange="changeRadio();">
-<label for="searchAccount">account</label>
-<input id="searchTweet" type="radio" name="searchMode" value="tweet" onchange="changeRadio();">
-<label for="searchTweet">tweet</label>
+<div class="tabbox">
+  <p class="tabs">
+    <a href="#tab1" class="tab1" onclick="changeTab('tab1'); return false;">Account</a>
+    <a href="#tab2" class="tab2" onclick="changeTab('tab2'); return false;">Tweet</a>
+    <a href="#tab3" class="tab3" onclick="changeTab('tab3'); return false;">Monitoring</a>
+  </p>
+  <div id="tab1" class="tab">
+    <h3>AccountSearch</h3>
+    <div>
+      <label>search option：</label>
+      <input id="timelineHits" type="number" style="width:30px;" min="10" max="100" step="10" required>hits   
+    </div>
+    <div>
+    <label>serach word：</label>
+      <input id="searchAccount" type="search" placeholder="search account">
+      <input type="submit" value="search" onclick="getTimeline();">
+    </div>
+  </div>
+  <div id="tab2" class="tab">
+    <h3>TweetSearch</h3>
+    <div>
+      <label>search option：</label>
+      <input id="datetimepickerUntil" type="text">
+      <input id="tweetHits" type="number" style="width:30px;" min="10" max="100" step="10" required>hits
+    </div>
+    <div>
+      <label>serach word：</label>
+      <input id="searchWord" type="search" placeholder="search tweet">
+      <input type="submit" value="search" onclick="getTweet();">
+    </div>
+  </div>
+  <div id="tab3" class="tab">
+    <h3>MonitoringAccount</h3>
+    <div>
+      <input id="monitoringAccount" type="search" placeholder="search tweet">
+      <input type="submit" value="monitoring" onclick="getTimeline();">
+    </div>
+  </div>
 </div>
-<div>
-<label>serach option：</label>
-<input id="datetimepickerUntil" type="text" style="display:none">
-<input type="number" style="width:30px;" id="count" min="10" max="100" step="10" required>件
+<div id="tweetList">
 </div>
-<label>serach word：</label>
-<input id="searchWord" type="search" placeholder="search account">
-<input type="submit" value="検索" onclick="getTwitter();">
-<div id="tweetList" style="width:900px;align:center;"></div>
 <script type="text/javascript">
 $(function(){
 $('#datetimepickerUntil').datetimepicker({
@@ -38,27 +63,14 @@ $('#datetimepickerUntil').datetimepicker({
     format: 'Y-m-d'//フォーマット指定
   });
 });
-function getTwitter() {
-  var tweetList =document.getElementById('tweetList');
-  var childs = tweetList.childNodes;
-  if (typeof childs !== "undefined" && childs.length !== 0) {
-    var child = childs[0];
-    for (var i = 0; i < childs.length; i++) {
-      tweetList.removeChild(childs[i]);  
-    }
-  }
+changeTab('tab1');
+function getTweet() {
+  init();
   var searchWord = document.getElementById('searchWord');
-  var count = document.getElementById('count');
+  var tweetHits = document.getElementById('tweetHits');
   var until = document.getElementById('datetimepickerUntil');
+  var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + tweetHits.value + '&until=' + until.value;
   var tw = new TwitterAPI(requestURL, 'resultsOutput');
-  var radioValue = $("[name=searchMode]:checked").val();
-  if (radioValue == 'account') {
-    var requestURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + searchWord.value + '&count=' + count.value;
-    tw = new TwitterAPI(requestURL, 'resultsOutputAccount');
-  } else if (radioValue == 'tweet') {
-    var requestURL = "https://api.twitter.com/1.1/search/tweets.json?q=" + searchWord.value + '&count=' + count.value + '&until=' + until.value;
-    tw = new TwitterAPI(requestURL, 'resultsOutput');
-  }
   console.log(tw);
   OAuth.setTimestampAndNonce(tw.message);
   OAuth.SignatureMethod.sign(tw.message,tw.accessor);
@@ -72,14 +84,45 @@ function getTwitter() {
   });
 }
 
-function changeRadio() {
-  var radioValue = $("[name=searchMode]:checked").val();
-  if (radioValue == 'tweet') {
-    var datetimepicker = document.getElementById('datetimepickerUntil');
-    datetimepicker.style.display = "";
-  } else if (radioValue == "account") {
-    var datetimepicker = document.getElementById('datetimepickerUntil');
-    datetimepicker.style.display = "none";
+function getTimeline() {
+  init();
+  var timelineHits = document.getElementById('timelineHits');
+  var searchAccount = document.getElementById('searchAccount');
+  var requestURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + searchAccount.value + "&count=" + timelineHits.value;
+  console.log(requestURL);
+  var tw = new TwitterAPI(requestURL, 'resultsOutputAccount');
+  OAuth.setTimestampAndNonce(tw.message);
+  OAuth.SignatureMethod.sign(tw.message,tw.accessor);
+  var url = OAuth.addToURL(tw.message.action, tw.message.parameters);
+  $.ajax({
+    type: tw.method,
+    url: url,
+    dataType: "jsonp",
+    jsonp:false,
+    cache: true
+  });
+}
+
+function startMonitoring() {
+  var monitoringAccount = document.getElementById('monitoringAccount');
+  setInterval(function() { getTimeline(monitoringAccount.value); }, 10000);
+}
+
+function changeTab(tabName) {
+  document.getElementById('tab1').style.display = 'none';
+  document.getElementById('tab2').style.display = 'none';
+  document.getElementById('tab3').style.display = 'none';
+  document.getElementById(tabName).style.display = 'block';
+}
+
+function init() {
+  var tweetList =document.getElementById('tweetList');
+  var childs = tweetList.childNodes;
+  if (typeof childs !== "undefined" && childs.length !== 0) {
+    var child = childs[0];
+    for (var i = 0; i < childs.length; i++) {
+      tweetList.removeChild(childs[i]);
+    }
   }
 }
 </script>

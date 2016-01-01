@@ -1,3 +1,60 @@
+/* タブ */
+div.tabbox {
+  margin: 0px;
+  padding: 0px;
+  width: 900px;
+}
+p.tabs {
+  margin: 0px;
+  padding: 0px;
+}
+p.tabs a {
+  display: block;
+  width: 6em;
+  float: left;
+  margin: 0px 1px 0px 0px;
+  padding: 3px;
+  text-align: center;
+  border-radius: 12px 12px 0px 0px;
+}
+p.tabs a.tab1 {
+  background-color: #FDC561;
+  color: white;
+}
+p.tabs a.tab2 {
+  background-color: #FDC561;
+  color: white;
+}
+p.tabs a.tab3 {
+  background-color: #FDC561;
+  color: white;
+}
+p.tabs a:hover {
+  color: black;
+}
+div.tab {
+  height: 150px;
+  overflow: auto;
+  clear: left;
+}
+div#tab1 {
+  border: 2px;
+  solid blue;
+  background-color: lightgray;
+}
+div#tab2 {
+  border: 2px;
+  solid blue;
+  background-color: lightgray;
+}
+div#tab3 {
+  border: 2px;
+  solid blue;
+  background-color: lightgray;
+}
+div.tab p { margin: 0.5em; }
+
+/* タイムライン */
 ul#list {
   display: table;
   border-collapse: collapse;
@@ -6,18 +63,42 @@ ul#list {
 ul#list li {
   display: table-row;
 }
-
-li.tableHeader {
-	background: #FDC561;
-}
 span.cell {
   display: table-cell;
   padding: 10px;
   border: 1px solid #000;
 }
-
+div.textBlock {
+  display: inherit;
+  width:800px;
+  float: left;
+}
 div#tweetList {
-	width : 900px;
-  margin: 0 auto 0 auto;
-  padding-top:10px;
+  width : 900px;
+}
+span img {
+  width: 100%;
+  height:100%;
+}
+s.userName {
+  padding-left: 10px;
+}
+.userName {
+  font-size: 13px;
+  font-style: italic;
+  color: #8899a6;
+}
+.fullName {
+  padding-left: 10px;
+}
+p.text {
+  padding-left: 10px;
+}
+span.dateTime {
+  padding-left: 10px;
+  font-size: 13px;
+}
+div.iconImg {
+  display: inline;
+  float: left;
 }
