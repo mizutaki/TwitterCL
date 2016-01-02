@@ -49,8 +49,8 @@
   <div id="tab3" class="tab">
     <h3>MonitoringAccount</h3>
     <div>
-      <input id="monitoringAccount" type="search" placeholder="search tweet">
-      <input type="submit" value="monitoring" onclick="getTimeline();">
+      <input id="monitoringAccount" type="search" placeholder="monitoring account">
+      <input type="submit" value="monitoring" onclick="startMonitoring();">
     </div>
   </div>
 </div>
@@ -103,9 +103,31 @@ function getTimeline() {
   });
 }
 
+function monitoring(account) {
+  var dateTime = document.getElementsByClassName('dateTime');
+  var latestDate = "";
+  if (dateTime.length > 0) {
+    localStorage.latestDate = dateTime[0].innerHTML;
+  }
+  init();
+  var requestURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + account;
+  console.log(requestURL);
+  var tw = new TwitterAPI(requestURL, 'resultsOutputMonitoring');
+  OAuth.setTimestampAndNonce(tw.message);
+  OAuth.SignatureMethod.sign(tw.message,tw.accessor);
+  var url = OAuth.addToURL(tw.message.action, tw.message.parameters);
+  $.ajax({
+    type: tw.method,
+    url: url,
+    dataType: "jsonp",
+    jsonp:false,
+    cache: true
+  });
+}
+
 function startMonitoring() {
   var monitoringAccount = document.getElementById('monitoringAccount');
-  setInterval(function() { getTimeline(monitoringAccount.value); }, 10000);
+  setInterval(function() { monitoring(monitoringAccount.value); }, 100000);
 }
 
 function changeTab(tabName) {

@@ -58,15 +58,22 @@ function resultsOutputAccount(data) {
   }
 }
 
-function resultsOutputMonitorin(data) {
+function resultsOutputMonitoring(data) {
   var statuses = data;
   console.log(statuses.length + "件");
+  var latestDate = new Date(localStorage.latestDate).getTime();
   createUl();
   var ul = document.getElementById("list");
   for (var i = 0; i < statuses.length; i++) {
-    console.log(statuses[i].user.name);
-    console.log(statuses[i].user.screen_name);
-    console.log(statuses[i].text);
-    createTable(ul,statuses[i]);
+    var created = new Date(statuses[i].created_at).getTime();
+    if (created > latestDate) {
+      console.log(statuses[i].user.name);
+      console.log(statuses[i].user.screen_name);
+      console.log(statuses[i].text);
+      var n = new Notification('notify', {
+        body: statuses[i].user.screen_name + " new Tweet " + statuses[i].text
+      });
+      createTable(ul,statuses[i]);
+    }
   }
 }
